@@ -1,8 +1,9 @@
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.database import connect_to_mongodb, close_mongodb_connection
-from app.routers import payment
+from app.routers import payment, donation
 from app.config import LOG_LEVEL
 from app.config import PORT
 
@@ -20,8 +21,18 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Add CORS middleware for WebSocket support
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Include routers
 app.include_router(payment.router)
+app.include_router(donation.router)
 
 # Database startup and shutdown events
 @app.on_event("startup")
