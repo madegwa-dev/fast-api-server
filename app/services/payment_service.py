@@ -57,17 +57,6 @@ class PaymentService:
             "Content-Type": "application/json",
             "Authorization": basic_auth_token,
         }
-        
-        logger.info(f'authorisation: {basic_auth_token}')
-
-        logger.info(f"Sending request to: {self.payhero_api_url}")
-        logger.debug(f"Auth token: {basic_auth_token}")
-        logger.debug(f"Request data: {json_data}")
-        logger.debug(f"PayHero URL: {self.payhero_api_url}")
-        logger.debug(f"Callback URL: {self.payhero_callback_url}")
-        
-        logger.info(f"Headers: {headers}")
-        logger.info(f"body: {json_data}")
 
 
         payment_response = PaymentResponse()
@@ -75,7 +64,6 @@ class PaymentService:
         # Make the HTTP request
         async with httpx.AsyncClient(timeout=60) as client:
             try:
-                logger.info(f"failure point one")
                 response = await client.post(
                     self.payhero_api_url,
                     json=json_data,
