@@ -4,7 +4,7 @@ import logging
 from app.database import connect_to_mongodb, close_mongodb_connection
 from app.routers import payment
 from app.config import LOG_LEVEL
-from app.config import config
+from app.config import PORT
 
 # Configure logging
 logging.basicConfig(
@@ -39,4 +39,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=config.PORT, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=PORT, reload=True)

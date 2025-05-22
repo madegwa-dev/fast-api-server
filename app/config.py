@@ -1,4 +1,16 @@
 from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+import os
+
+# Reload .env
+load_dotenv()
+os.environ.clear()
+
+
+print("Current working directory:", os.getcwd())
+print("initial MONGODB_URI:", os.getenv("MONGODB_URI"))
+print("initial PAYHERO_CALLBACK_URL:", os.getenv("PAYHERO_CALLBACK_URL"))
+
 
 class Config(BaseSettings):
     MONGODB_URI: str
@@ -35,3 +47,7 @@ print(f"PAYHERO_PASSWORD: {PAYHERO_PASSWORD}")
 print(f"PAYHERO_CALLBACK_URL: {PAYHERO_CALLBACK_URL}")
 print(f"LOG_LEVEL: {LOG_LEVEL}")
 print(f"PORT: {PORT}")
+
+
+print("real MONGODB_URI:", os.getenv("MONGODB_URI"))
+print("real PAYHERO_CALLBACK_URL:", os.getenv("PAYHERO_CALLBACK_URL"))
