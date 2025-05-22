@@ -56,23 +56,32 @@ class PaymentService:
         headers = {
             "Content-Type": "application/json",
             "Authorization": basic_auth_token,
-            "cache-control": "no-cache"
         }
+        
+        logger.info(f'authorisation: {basic_auth_token}')
 
         logger.info(f"Sending request to: {self.payhero_api_url}")
         logger.debug(f"Auth token: {basic_auth_token}")
         logger.debug(f"Request data: {json_data}")
+        logger.debug(f"PayHero URL: {self.payhero_api_url}")
+        logger.debug(f"Callback URL: {self.payhero_callback_url}")
+        
+        logger.info(f"Headers: {headers}")
+        logger.info(f"body: {json_data}")
+
 
         payment_response = PaymentResponse()
         
         # Make the HTTP request
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=60) as client:
             try:
+                logger.info(f"failure point one")
                 response = await client.post(
                     self.payhero_api_url,
                     json=json_data,
                     headers=headers
                 )
+                logger.info(f"failure point 2: {response}")
                 
                 if response.status_code in [200,201]:
                     response_data = response.json()
@@ -93,11 +102,12 @@ class PaymentService:
                         detail=f"Payment service error: {response.text}"
                     )
             except httpx.RequestError as e:
-                logger.error(f"Request error during payment processing: {str(e)}")
+                logger.error(f"Request error: {e.request.url} - {str(e)}")
                 raise HTTPException(
                     status_code=500, 
                     detail=f"Payment service connection error: {str(e)}"
                 )
+
             except Exception as e:
                 logger.error(f"Error during payment processing: {str(e)}")
                 raise HTTPException(
