@@ -71,7 +71,7 @@ async def payment_callback(callback: CallbackDto):
         "ResultCode": callback.response.ResultCode,
         "ResultDesc": callback.response.ResultDesc,
     }
-    await DonorRepository.update_donor(callback.CheckoutRequestID, donor_update)
+    await DonorRepository.update_donor(callback.response.CheckoutRequestID, donor_update)
     logger.info(f"Donor updated: {donor_update}")
 
     # Save payment data
