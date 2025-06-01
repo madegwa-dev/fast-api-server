@@ -13,7 +13,7 @@ async def connect_to_mongodb():
     Database.client = AsyncIOMotorClient(MONGODB_URI)
     Database.db = Database.client[DATABASE_NAME]
     logger.debug("Testing MongoDB connection...")
-    if not Database.db:
+    if Database.db is None:
         logger.error("MongoDB database connection is None!")
     else:
         logger.debug("MongoDB connection is active.")
