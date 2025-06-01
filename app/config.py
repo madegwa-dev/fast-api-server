@@ -27,6 +27,7 @@ class Config(BaseSettings):
     PAYHERO_PASSWORD: str
     PAYHERO_CALLBACK_URL: str
     LOG_LEVEL: str
+    FRONTEND_URL: str
     PORT: int = 8000  # Default to 8000 if not set in .env
 
     class Config:
@@ -43,6 +44,7 @@ PAYHERO_USERNAME = config.PAYHERO_USERNAME
 PAYHERO_PASSWORD = config.PAYHERO_PASSWORD
 PAYHERO_CALLBACK_URL = config.PAYHERO_CALLBACK_URL
 LOG_LEVEL = config.LOG_LEVEL
+FRONTEND_URL = config.FRONTEND_URL
 PORT = config.PORT
 
 # Debugging (Optional: Remove in Production)
@@ -54,3 +56,4 @@ print(f"PAYHERO_PASSWORD: {PAYHERO_PASSWORD}")
 print(f"PAYHERO_CALLBACK_URL: {PAYHERO_CALLBACK_URL}")
 print(f"LOG_LEVEL: {LOG_LEVEL}")
 print(f"PORT: {PORT}")
+print(f"FRONTEND_URL: {FRONTEND_URL}")

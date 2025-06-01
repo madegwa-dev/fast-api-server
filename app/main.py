@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.database import connect_to_mongodb, close_mongodb_connection
 from app.routers import payment
-from app.config import LOG_LEVEL
+from app.config import LOG_LEVEL, FRONTEND_URL
 from app.config import PORT
 
 # Configure logging
@@ -24,7 +24,7 @@ app = FastAPI(
 # Add CORS middleware for WebSocket support
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
