@@ -1,9 +1,9 @@
-
-from fastapi import FastAPI
+import json
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.database import connect_to_mongodb, close_mongodb_connection
-from app.routers import payment, donation
+from app.routers import payment
 from app.config import LOG_LEVEL
 from app.config import PORT
 
@@ -32,7 +32,6 @@ app.add_middleware(
 
 # Include routers
 app.include_router(payment.router)
-app.include_router(donation.router)
 
 # Database startup and shutdown events
 @app.on_event("startup")
@@ -47,6 +46,18 @@ async def shutdown_db():
 @app.get("/")
 async def root():
     return {"message": "Welcome to Payment Service API"}
+
+# WebSocket Endpoint
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_text()
+            response = {"message": f"Message received: {data}"}
+            await websocket.send_text(json.dumps(response))
+    except WebSocketDisconnect:
+        print("Client disconnected")
 
 if __name__ == "__main__":
     import uvicorn
