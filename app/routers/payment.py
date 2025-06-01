@@ -63,13 +63,13 @@ async def payment_callback(callback: CallbackDto):
 
     # Update donor details
     donor_update = {
-        "phone": callback.Phone,
-        "Amount": callback.Amount,
-        "externalReference": callback.ExternalReference,
-        "MpesaReceiptNumber": callback.MpesaReceiptNumber,
-        "Status": callback.Status,
-        "ResultCode": callback.ResultCode,
-        "ResultDesc": callback.ResultDesc,
+        "phone": callback.response.Phone,
+        "Amount": callback.response.Amount,
+        "externalReference": callback.response.ExternalReference,
+        "MpesaReceiptNumber": callback.response.MpesaReceiptNumber,
+        "Status": callback.response.Status,
+        "ResultCode": callback.response.ResultCode,
+        "ResultDesc": callback.response.ResultDesc,
     }
     await DonorRepository.update_donor(callback.CheckoutRequestID, donor_update)
     logger.info(f"Donor updated: {donor_update}")
