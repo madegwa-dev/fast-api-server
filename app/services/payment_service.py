@@ -28,18 +28,19 @@ class PaymentService:
         bytes_in_string = base64.b64encode(credential.encode()).decode()
         return f"Basic {bytes_in_string}"
 
-    async def initiate_payment(self, amount: int, phone_number: str) -> PaymentResponse:
+    async def initiate_payment(self, amount: int, phone_number: str, sender_name: str, external_reference: str) -> PaymentResponse:
         """Initiate a payment through PayHero API."""
         payment_request = PaymentRequest(
             amount=amount,
             phone_number=phone_number,
             channel_id=2175,
             provider="m-pesa",
-            external_reference="INV-009",
-            customer_name="spongebob",
+            external_reference=external_reference,
+            customer_name=sender_name,
             callback_url=self.payhero_callback_url
         )
 
+        logger.info(f'Initiating payment {payment_request}')
         # Prepare the request JSON
         json_data = {
             "amount": payment_request.amount,
@@ -105,56 +106,3 @@ class PaymentService:
         
         return payment_response
     
-    
-    
-    
-    async def initiate_payment_with_reference(self, amount: int, phone_number: str, external_reference: str, customer_name: str = "Customer") -> dict:
-        """
-        Initiate payment with custom external reference and customer name.
-        """
-        try:
-            # Create payment request with custom parameters
-            payment_request = PaymentRequest(
-                amount=amount,
-                phone_number=phone_number,
-                channel_id=2175,
-                provider="m-pesa",
-                external_reference=external_reference,
-                customer_name=customer_name,
-                callback_url=self.payhero_callback_url
-            )
-            
-            
-            basic_auth_token = self.generate_basic_auth_token()
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": basic_auth_token,
-            }
-
-            
-            # Make API call to PayHero
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    self.payhero_api_url,
-                    json=payment_request.model_dump(exclude_none=True),
-                    headers=headers,
-                    timeout=60.0
-                )
-                
-            if response.status_code in [200,201]:
-                result = response.json()
-                logger.info(f"Payment initiated successfully: {result}")
-                return result
-            else:
-                error_msg = f"Payment initiation failed with status {response.status_code}: {response.text}"
-                logger.error(error_msg)
-                raise HTTPException(status_code=response.status_code, detail=error_msg)
-                
-        except httpx.RequestError as e:
-            error_msg = f"Network error during payment initiation: {str(e)}"
-            logger.error(error_msg)
-            raise HTTPException(status_code=503, detail=error_msg)
-        except Exception as e:
-            error_msg = f"Unexpected error during payment initiation: {str(e)}"
-            logger.error(error_msg)
-            raise HTTPException(status_code=500, detail=error_msg)

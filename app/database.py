@@ -12,7 +12,12 @@ async def connect_to_mongodb():
     """Connect to MongoDB."""
     Database.client = AsyncIOMotorClient(MONGODB_URI)
     Database.db = Database.client[DATABASE_NAME]
-    logger.info("Connected to MongoDB")
+    logger.debug("Testing MongoDB connection...")
+    if not Database.db:
+        logger.error("MongoDB database connection is None!")
+    else:
+        logger.debug("MongoDB connection is active.")
+
 
 async def close_mongodb_connection():
     """Close MongoDB connection."""
