@@ -3,7 +3,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 from app.database import connect_to_mongodb, close_mongodb_connection
-from app.routers import payment
+from app.routers import payment,subscribers
 from app.config import LOG_LEVEL, FRONTEND_URL
 from app.config import PORT
 
@@ -32,6 +32,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(payment.router)
+app.include_router(subscribers.router)
 
 # Database startup and shutdown events
 @app.on_event("startup")
