@@ -27,6 +27,17 @@ class PaymentRequest(BaseModel):
     senderName: str
     externalReference: str
 
+@router.get("/get-donors")
+async def get_donors():
+    try:
+        # Fetch the top 5 donors sorted by Amount in descending order
+        top_donors = await DonorRepository.get_top_donors(limit=5)
+        return {"donors": top_donors}
+    except Exception as e:
+        logging.error(f"Error fetching donors: {e}")
+        raise HTTPException(status_code=500, detail="Unable to fetch donors")
+
+
 
 @router.post("/initiate", response_model=InitiatePaymentResponse)
 async def initiate_payment(payment: PaymentRequest):
@@ -35,6 +46,7 @@ async def initiate_payment(payment: PaymentRequest):
     try:
         result = await payment_service.initiate_payment(payment.amount, payment.phoneNumber, payment.senderName,
                                                         payment.externalReference)
+        logger.info(f"the result is: {result}")
         if result.success:
             # Save donor with minimal details
             donor = {

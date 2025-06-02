@@ -23,7 +23,8 @@ class PaymentResponse(BaseModel):
 class InitiatePaymentResponse(BaseModel):
     """API response for initiate payment endpoint."""
     message: str
-    details: Optional[PaymentResponse] = None
+    success: Optional[bool] = None
+    status: Optional[str] = None
 
 # Callback schemas
 class ResponseDto(BaseModel):

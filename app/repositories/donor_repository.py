@@ -16,6 +16,15 @@ class DonorRepository:
         return result.upserted_id
 
     @staticmethod
+    async def get_top_donors(limit: int = 5):
+        """Fetch top donors sorted by Amount in descending order."""
+        top_donors = await Database.db.donors.find(
+            {},  # No specific filter
+            {"_id": 0, "name": 1, "Amount": 1, }  # Fields to include in response
+        ).sort("Amount", -1).limit(limit).to_list(length=limit)
+        return top_donors
+
+    @staticmethod
     async def update_donor(checkout_request_id: str, updates: dict) -> None:
         """Update donor details based on CheckoutRequestID."""
         await Database.db.donors.update_one(
